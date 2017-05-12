@@ -1,5 +1,5 @@
 # SimpleIPC-lib
-Simple IPC (interprocess communication) for any program shipped as a dll/so
+Simple IPC (interprocess communication) for any program shipped as a dll/so, or possibly linked in statically with .a/.h files
 
 Why is IPC so difficult and why do so many people end up reinventing their own IPC mechanisms?
 
