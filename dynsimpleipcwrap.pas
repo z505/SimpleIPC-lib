@@ -11,13 +11,13 @@ const dll = 'dynsimpleipc.dll';
 
 // DLL functions (and needs to be a C Header for golang/C):
 
-function sIpcCreateIpcServer(ServerID: pchar; threaded: int32): int32; cdecl;
+function sIpcCreateServer(ServerID: pchar; threaded: int32): int32; cdecl;
 external dll;
-procedure sIpcCreateIpcServerTest; cdecl;
+procedure sIpcCreateServerTest; cdecl;
 external dll;
-function sIpcFreeIpcServer: int32; cdecl;
+function sIpcFreeServer: int32; cdecl;
 external dll;
-function sIpcStartIpcServer: int32; cdecl;
+function sIpcStartServer: int32; cdecl;
 external dll;
 function sIpcPeekMsg(timeout: int32; readopt: int32): int32; cdecl;
 external dll;

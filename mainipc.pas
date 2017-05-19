@@ -364,7 +364,7 @@ end; exports sIpcExecOnIntStr;
    2: threaded IPC not available on this operating system or platform
    3: other error
 }
-function sIpcCreateIpcServer(ServerID: pchar; threaded: int32): int32; cdecl;
+function sIpcCreateServer(ServerID: pchar; threaded: int32): int32; cdecl;
   procedure cleanup;
   begin
     if assigned(ipc.srv) then ipc.srv.free;
@@ -408,13 +408,13 @@ begin
   except
     exit(3);
   end;
-end; exports sIpcCreateIpcServer;
+end; exports sIpcCreateServer;
 
 // simple test with default server ID of 12345test
-procedure sIpcCreateIpcServerTest; cdecl;
+procedure sIpcCreateServerTest; cdecl;
 begin
-  sIpcCreateIpcServer(TEST_SERVER_ID, OPT_NO_THREAD);
-end; exports sIpcCreateIpcServerTest;
+  sIpcCreateServer(TEST_SERVER_ID, OPT_NO_THREAD);
+end; exports sIpcCreateServerTest;
 
 { returns
   1: error stopping the server
@@ -422,7 +422,7 @@ end; exports sIpcCreateIpcServerTest;
   3: ipc server variable not assigned, trying to free server that doesn't exist
   4: error freeing ipc server
 }
-function sIpcFreeIpcServer: int32; cdecl;
+function sIpcFreeServer: int32; cdecl;
 
   procedure cleanup;
   begin ipc.free; ipc := nil;
@@ -446,7 +446,7 @@ begin
     exit(4);
   end;
   cleanup;
-end; exports sIpcFreeIpcServer;
+end; exports sIpcFreeServer;
 
 { returns errors:
   0: success
@@ -454,7 +454,7 @@ end; exports sIpcFreeIpcServer;
   2: error running server
   3: IPC variable not created (it is nil)
 }
-function sIpcStartIpcServer: int32; cdecl;
+function sIpcStartServer: int32; cdecl;
 begin
   result := 1;
   if not assigned(ipc) then exit(3);
@@ -464,7 +464,7 @@ begin
     result := 2;
   end;
   result := 0;
-end; exports sIpcStartIpcServer;
+end; exports sIpcStartServer;
 
 
 {$ifdef TESTINGON}
