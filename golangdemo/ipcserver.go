@@ -1,3 +1,7 @@
+/* SimpleIPC demo server in go that uses the simple ipc dll
+   Run the fpc client program to send a message to this go app
+*/
+
 package main
 
 /*
@@ -5,7 +9,10 @@ package main
 
 #include "simpleipc.h"
 
-extern void callback(char* s);
+// Go code linked up to these C names
+extern void CallbackString(char* s);
+extern void CallbackInt32(int i); 
+// note: long vs int, vs int32.. fix this inconsistency
 */
 import "C"
 
@@ -47,13 +54,18 @@ func Example1() {
 
 var recvdstop bool = false
 
-//export callback
-func callback(s *C.char) {
+//export CallbackString
+func CallbackString(s *C.char) {
 	gostr := C.GoString(s)  // convert to golang string
 	if gostr == "stop" {
 		recvdstop = true
 	}
-	fmt.Println("Msg recvd: ", gostr)
+	fmt.Println("Msg recvd (string): ", gostr)
+}
+
+//export CallbackInt32
+func CallbackInt32(i int32) {
+	fmt.Println("Msg recvd (int32):  ", i)
 }
 
 func Example2() {
@@ -63,7 +75,13 @@ func Example2() {
 	fmt.Println("IPC Server running")
     fmt.Println("Checking for messages...")
 	for {
-        C.sIpcExecOnMsg(10,10,(C.TCallbackString)(unsafe.Pointer(C.callback)),nil,nil,nil,nil)
+		// setup a callback when a msg is received
+        C.sIpcExecOnMsg(10,10,
+			(C.TCallbackString)(unsafe.Pointer(C.CallbackString)),  // one for a string message
+			(C.TCallbackInt32)(unsafe.Pointer(C.CallbackInt32)), // one for an integer message
+			nil,
+			nil,
+			nil)
         if recvdstop {
 			break
 		}
