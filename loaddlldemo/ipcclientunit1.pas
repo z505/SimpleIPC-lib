@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   simpleipc;
 
-{$i libdeclare.inc}
+{$i ../libdeclare.inc}
 
 const
   TEST_SERVER_ID = '123';
@@ -71,20 +71,29 @@ begin
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
+const
+  id = 505;
+  thx = 1138;
 var
-  I,Count : integer;
-  sc: TSimpleIPCClient;
+  i,j: int32;
 begin
-  Count:=1;
-  sc := TSimpleIPCClient.Create(nil);
-  try
-    sc.ServerID := TEST_SERVER_ID;
-    sc.Active:=True;
-    sc.SendStringMessage(Format('Testmessage %d from client',[i]));
-    sc.Active:=False;
-  finally
-    sc.Free;
-  end;
+  with TSimpleIPCClient.Create(Nil) do
+    try
+      ServerID := TEST_SERVER_ID;
+      Active:=True;
+      i := id;
+      inc(i);
+      j := thx;
+      inc(j);
+      SendStringMessage(mtString, 'THX1138 incremented his punch card');
+      SendStringMessage(mtInt32, inttostr(j));
+      SendStringMessage(mtString, 'THX'+inttostr(j));
+      SendStringMessage(mtInt32, inttostr(i));
+      SendStringMessage(mtString, 'Z'+inttostr(i));
+      Active:=False;
+    finally
+      Free;
+    end;
 end;
 
 procedure TForm1.bStopClick(Sender: TObject);

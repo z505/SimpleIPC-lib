@@ -11,7 +11,7 @@ object Form1: TForm1
     Left = 4
     Height = 25
     Top = 4
-    Width = 103
+    Width = 184
     Caption = 'Send String Msg'
     OnClick = Button1Click
     TabOrder = 0
@@ -39,8 +39,8 @@ object Form1: TForm1
     Left = 4
     Height = 25
     Top = 28
-    Width = 108
-    Caption = 'Send Integer Msg'
+    Width = 184
+    Caption = 'Send Integer And String Msg''s'
     OnClick = Button2Click
     TabOrder = 3
   end
