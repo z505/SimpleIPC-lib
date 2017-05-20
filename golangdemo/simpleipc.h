@@ -8,11 +8,11 @@
   TCallbackIntStr = procedure(i: int32; s: pchar); cdecl;
 */
 
-typedef void (*TCallbackString)(char*);
-typedef void (*TCallbackInt32)(long);
-typedef void (*TCallbackXY)(long, long);
-typedef void (*TCallbackX4)(long, long, long, long);
-typedef void (*TCallbackIntStr)(long, char*);
+typedef void (__cdecl *TCallbackString)(char*);
+typedef void (__cdecl *TCallbackInt32)(long);
+typedef void (__cdecl *TCallbackXY)(long, long);
+typedef void (__cdecl *TCallbackX4)(long, long, long, long);
+typedef void (__cdecl *TCallbackIntStr)(long, char*);
 
 extern long __cdecl
 sIpcCreateServer(char* ServerID, long threaded);
