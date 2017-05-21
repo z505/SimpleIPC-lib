@@ -1,6 +1,8 @@
 /* SimpleIPC demo server in go that uses the simple ipc dll
    Run the fpc client program to send a message to this go app
-*/
+   
+   Copyright 2017, Z505 Software
+   License: BSD/MIT  */
 
 package main
 
@@ -11,7 +13,7 @@ package main
 
 // Go code linked up to these C names
 extern void CallbackString(char* s);
-extern void CallbackInt32(int i); 
+extern void CallbackInt32(int i);
 // note: long vs int, vs int32.. fix this inconsistency
 */
 import "C"
@@ -45,13 +47,6 @@ func sleepMillisec(millisec time.Duration) {
 	time.Sleep(millisec * time.Millisecond)
 }
 
-func Example1() {
-	C.sIpcCreateServerTest()
-	C.sIpcStartServer()
-	// sleepMillisec(100)
-	C.sIpcFreeServer()
-}
-
 var recvdstop bool = false
 
 //export CallbackString
@@ -66,6 +61,13 @@ func CallbackString(s *C.char) {
 //export CallbackInt32
 func CallbackInt32(i int32) {
 	fmt.Println("Msg recvd (int32):  ", i)
+}
+
+func Example1() {
+	C.sIpcCreateServerTest()
+	C.sIpcStartServer()
+	// sleepMillisec(100)
+	C.sIpcFreeServer()
 }
 
 func Example2() {
