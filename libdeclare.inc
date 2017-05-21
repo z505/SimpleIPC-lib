@@ -1,8 +1,14 @@
+{ Include file for common declarations used in DLL and executable code
+
+  Copyright Z505 Software
+
+  License: bsd/mit }
+
 type
   TCallbackString = procedure(s: pchar); cdecl;
   TCallbackInt32 = procedure(x: int32); cdecl;
   TCallbackXY = procedure(x,y: int32); cdecl;
-  TCallbackX4 = procedure(x1,x2,x3,x4: int32); cdecl;
+  TCallbackInts = procedure(x1,x2,x3,x4: int32); cdecl;
   TCallbackIntStr = procedure(i: int32; s: pchar); cdecl;
 
 const
@@ -15,12 +21,12 @@ const
 
 const
   //Message types
-  mtUnknown = 0; // unknown message, const taken from simpleipc unit
-  mtString = 1;  // string message, const taken from simpleipc unit
-  mtInt32 = 2;   // integer, long
-  mtXY = 3;      // x and y integer pair
-  mtX4 = 4;      // four integers
-  mtIntStr = 5;  // integer and string combination
+  mtUnknown = 0;  // unknown message, const taken from simpleipc unit
+  mtString = 1;   // string message, const taken from simpleipc unit
+  mtInt32 = 2;    // integer, long
+  mtXY = 3;       // x and y integer pair
+  mtInts = 4;     // four integers
+  mtIntStr = 5;   // integer and string combination
 
 
 

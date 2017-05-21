@@ -15,7 +15,9 @@
      c/c++/delphi/other languages do not have a comptable exception mechanism
      or shared memory manager with fpc.
 
-  }
+ Copyright Z505 Software
+
+ License: bsd/mit }
 
 library dynsimpleipc;
 {$mode objfpc} {$H+}
