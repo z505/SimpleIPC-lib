@@ -3,7 +3,8 @@
   These should be fast routines as parsing the first integers don't take many cpu
   cycles since it just checks for semi colons then exits.
   Then the rest of the string copied using a fast Copy() function or RightStr()
-  However no benchmarks have been done. Todo: try speed after thousands of calls
+  However no benchmarks have been done. Todo: try test speed after thousands of
+  calls, and compare to a binary delimited mechanism instead of plain string
 
   Copyright Z505 Software
 
@@ -24,9 +25,9 @@ uses
 
 function ParseIntAndStr(const s: string; out outi: integer; out outs: string): boolean;
 function IntBeforeSemi(const s: string; out outi: integer): integer;
-function ParseXYAndStr(s: string; out outx: integer; out outy: integer;
+function ParseXYAndStr(const s: string; out outx: integer; out outy: integer;
   out outs: string): boolean;
-function Parse4IntsAndStr(s: string;
+function Parse4IntsAndStr(const s: string;
   out x1: integer; out x2: integer; out x3: integer; out x4: integer;
   out outs: string): boolean;
 function ParseInts(s: string; out val1, val2, val3, val4: integer): boolean;
@@ -37,11 +38,20 @@ function Parse2Ints(s: string; out val1, val2: integer): boolean;
   procedure ParseIntStrTests;
 {$endif}
 
+procedure defaultdbugln(s: string);
+
+var dbugln: procedure(s: string) = @defaultdbugln;
 
 implementation
 
+procedure defaultdbugln(s: string);
+begin
+  // user can assign his own statusln variable, this is a dummy
+end;
+
 // parse an integer and a string delimited by semicolon,
 // i.e. 1343;some string here
+(* old function
 function ParseIntAndStr(const s: string; out outi: integer; out outs: string): boolean;
 var i, len: integer;
     tmp: string;
@@ -62,19 +72,52 @@ begin
     inc(i);
   end;
 end;
+*)
 
-// extract first integer before a semi colon in a string
-// returns position of semicolon, 0 if not found
-function intBeforeSemi(const s: string; out outi: integer): integer;
+{
+1;2;st
+length:6
+start:3
+i: 4
+}
+// parse an integer and a string delimited by semicolon from a starting point
+function ParseIntAndStrFrom(start: integer; const s: string; out outi: integer; out outs: string): boolean;
+var i, len: integer;
+    tmp: string;
+begin
+  result := false;
+  len := length(s);
+  outs := '';
+  i := start;
+  while i <= len do begin
+    if s[i] = ';' then begin
+      tmp := MidStr(s, start, i-start);
+      if TryStrToInt(tmp, outi) then begin
+        outs := MidStr(s, i+1, len-i);
+        result := true;
+      end;
+      break;
+    end;
+    inc(i);
+  end;
+end;
+
+// default, start position at 1
+function ParseIntAndStr(const s: string; out outi: integer; out outs: string): boolean;
+begin
+  result := ParseIntAndStrFrom(1,s,outi,outs);
+end;
+
+function intBeforeSemiFrom(start: integer; const s: string; out outi: integer): integer;
 var i, len: integer;
     tmp: string;
 begin
   result := 0;
   len := length(s);
-  i := 2; // minimum semi colon position position two in string, i.e. 1;somestring
+  i := start; // minimum semi colon position position two in string, i.e. 1;somestring
   while i <= len do begin
     if s[i] = ';' then begin
-      tmp := LeftStr(s, i-1);
+      tmp := MidStr(s, start, i-start);
       if TryStrToInt(tmp, outi) then result := i;
       break;
     end;
@@ -82,11 +125,19 @@ begin
   end;
 end;
 
+
+// extract first integer before a semi colon in a string
+// returns position of semicolon, 0 if not found
+function intBeforeSemi(const s: string; out outi: integer): integer;
+begin
+  result := intBeforeSemiFrom(1,s,outi);
+end;
+
 { parse this:
  1234;567;some string
  2 semi colons means 2 integers
  everything after second semi colon is a string }
-function ParseXYAndStr(s: string; out outx: integer; out outy: integer;
+function ParseXYAndStr(const s: string; out outx: integer; out outy: integer;
   out outs: string): boolean;
 var semiColPos: integer;
 begin
@@ -94,29 +145,28 @@ begin
   semiColPos := intBeforeSemi(s, outx);
   if semiColPos > 0 then begin
     // parse the rest of the string
-    result := ParseIntAndStr(RightStr(s, length(s)-semiColPos), outy, outs);
+    // result := ParseIntAndStr(RightStr(s, length(s)-semiColPos), outy, outs);
+    result := ParseIntAndStrFrom(semiColPos+1, s, outy, outs);
   end;
 end;
 
 { parse this:
   452;9098;8763;762;some string
   everything after fourth semi colon is a string  }
-function Parse4IntsAndStr(s: string;
+function Parse4IntsAndStr(const s: string;
   out x1: integer; out x2: integer; out x3: integer; out x4: integer;
   out outs: string): boolean;
-var semiColPos, pos2, pos3, len: integer;
+var semiColPos: integer;
 begin
   result := false;
-  len := length(s);
   semiColPos := intBeforeSemi(s, x1);
-  semiColPos := len-semiColPos;
-  pos2 := intBeforeSemi(RightStr(s, semiColPos), x2);
-  semiColPos := semiColPos-pos2;
-  pos3 := intBeforeSemi(RightStr(s, semiColPos), x3);
+  semiColPos := intBeforeSemiFrom(semiColPos+1,s, x2);
+  if semiColPos = 0 then exit;
+  semiColPos := intBeforeSemiFrom(semiColPos+1, s, x3);
+  if semiColPos = 0 then exit;
   if semiColPos > 0 then begin
     // parse the rest of the string
-    semiColPos := semiColPos-pos3;
-    result := parseIntAndStr(RightStr(s, semiColPos), x4, outs);
+    result := parseIntAndStrFrom(semiColPos+1,s, x4, outs);
   end;
 end;
 
@@ -248,16 +298,16 @@ var i: integer;
 begin
   writeln('----- Parse Int Str Tests -----');
   writeln('should succeed:');
-  success := ParseIntStr('8732;a string is here', i, s);
+  success := ParseIntAndStr('8732;a string is here', i, s);
   writeln('test 1: success: ', success, ' int: ', i, ' string: "', s,'"');
   writeln('should fail:');
-  success := ParseIntStr('8732acx;a string is here', i, s);
+  success := ParseIntAndStr('8732acx;a string is here', i, s);
   writeln('test 2: success: ', success, ' int: ', i, ' string: "', s,'"');
   writeln('should succeed:');
-  success := ParseIntStr('1234;a string ;is ;here', i, s);
+  success := ParseIntAndStr('1234;a string ;is ;here', i, s);
   writeln('test 3: success: ', success, ' int: ', i, ' string: "', s,'"');
   writeln('should succeed:');
-  success := ParseIntStr('1234;34;a string ;is ;here', i, s);
+  success := ParseIntAndStr('1234;34;a string ;is ;here', i, s);
   writeln('test 4: success: ', success, ' int: ', i, ' string: "', s,'"');
 end;
 {$endif} // verification tests

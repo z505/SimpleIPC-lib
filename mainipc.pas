@@ -226,8 +226,8 @@ begin
         mtInts:   begin
                     success := parseInts(recvdstring, x1, x2, x3, x4);
                     if not success then exit(1);
-                    if cbX4 <> nil then begin
-                      cbX4(x1, x2, x3, x4);
+                    if cbInts <> nil then begin
+                      cbInts(x1, x2, x3, x4);
                     end else begin
                       exit(3);
                     end;
