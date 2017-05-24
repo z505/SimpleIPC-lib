@@ -274,8 +274,11 @@ end; exports sIpcExecOnIntStr;
    2: ipc server already created, can't create again until freed first }
 function sIpcCreateServer: int32; cdecl;
 begin
-  if assigned(ipc) then exit(1);
-  if assigned(ipc.srv) then exit(2);
+  if assigned(ipc) then begin
+    if assigned(ipc.srv) then exit(2);
+    exit(1);
+  end;
+
   ipc := TIpc.Create;
   ipc.srv := TSimpleIPCServer.Create(nil);
   result := 0;

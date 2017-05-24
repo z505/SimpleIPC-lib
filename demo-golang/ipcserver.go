@@ -14,7 +14,9 @@ package main
 // Go code linked up to these C names
 extern void CallbackString(char* s);
 extern void CallbackInt32(int i);
-// note: long vs int, vs int32.. fix this inconsistency
+extern void CallbackXY(int x, int y);
+extern void CallbackIntStr(int x, char* s);
+extern void CallbackInts(int x1, int x2, int x3, int x4);
 */
 import "C"
 
@@ -63,6 +65,22 @@ func CallbackInt32(i int32) {
 	fmt.Println("Msg recvd (int32):  ", i)
 }
 
+//export CallbackIntStr
+func CallbackIntStr(i int32, s *C.char) {
+	gostr := C.GoString(s)  // convert to golang string
+	fmt.Println("Msg recvd (int and string): int:", i, "string:", gostr)
+}
+
+//export CallbackXY
+func CallbackXY(x int32, y int32,) {
+	fmt.Println("Msg recvd (two ints): ",x, "and", y)
+}
+
+//export CallbackInts
+func CallbackInts(x1 int32, x2 int32, x3 int32, x4 int32) {
+	fmt.Println("Msg recvd (multiple ints): ",x1, "and", x2, "and", x3, "and", x4)
+}
+
 func Example1() {
 	C.sIpcCreateServer()
 	C.sIpcStartServerTest()
@@ -81,9 +99,9 @@ func Example2() {
         C.sIpcExecOnMsg(10,10,
 			(C.TCallbackString)(unsafe.Pointer(C.CallbackString)),  // one for a string message
 			(C.TCallbackInt32)(unsafe.Pointer(C.CallbackInt32)), // one for an integer message
-			nil,
-			nil,
-			nil)
+            (C.TCallbackXY)(unsafe.Pointer(C.CallbackXY)),
+            (C.TCallbackInts)(unsafe.Pointer(C.CallbackInts)),
+			(C.TCallbackIntStr)(unsafe.Pointer(C.CallbackIntStr)))
         if recvdstop {
 			break
 		}

@@ -122,12 +122,12 @@ end; exports sIpcSendInt32Msg;
 
 function sIpcSendIntStrMsg(i: int32; s: pchar): int32; cdecl;
 begin
-  result := SendMsg(mtInt32,i,0,0,0,s);
+  result := SendMsg(mtIntStr,i,0,0,0,s);
 end; exports sIpcSendIntStrMsg;
 
 function sIpcSendIntsMsg(x1: int32; x2: int32; x3: int32; x4: int32): int32; cdecl;
 begin
-  result := SendMsg(mtInt32,x1,x2,x3,x4,nil);
+  result := SendMsg(mtInts,x1,x2,x3,x4,nil);
 end; exports sIpcSendIntsMsg;
 
 end.
