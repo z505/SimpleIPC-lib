@@ -1,13 +1,13 @@
 /* SimpleIPC demo server in go that uses the simple ipc dll
    Run the fpc client program to send a message to this go app
-   
+
    Copyright 2017, Z505 Software
    License: BSD/MIT  */
 
 package main
 
 /*
-#cgo LDFLAGS: -L${SRCDIR}/../loaddlldemo -ldynsimpleipc
+#cgo LDFLAGS: -L${SRCDIR} -ldynsimpleipc
 
 #include "simpleipc.h"
 
@@ -64,16 +64,16 @@ func CallbackInt32(i int32) {
 }
 
 func Example1() {
-	C.sIpcCreateServerTest()
-	C.sIpcStartServer()
+	C.sIpcCreateServer()
+	C.sIpcStartServerTest()
 	// sleepMillisec(100)
 	C.sIpcFreeServer()
 }
 
 func Example2() {
 	cSERVER_ID := C.CString(SERVER_ID)  // convert to c string
-	C.sIpcCreateServer(cSERVER_ID, OPT_NO_THREAD)
-	C.sIpcStartServer()
+	C.sIpcCreateServer()
+	C.sIpcStartServer(cSERVER_ID, OPT_NO_THREAD)
 	fmt.Println("IPC Server running")
     fmt.Println("Checking for messages...")
 	for {
