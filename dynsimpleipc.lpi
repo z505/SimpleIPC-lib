@@ -37,8 +37,9 @@
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="mainipc.pas"/>
+        <Filename Value="sipcclient.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="sIpcClient"/>
       </Unit1>
       <Unit2>
         <Filename Value="dynsimpleipcwrap.pas"/>

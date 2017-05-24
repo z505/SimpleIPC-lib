@@ -5,6 +5,8 @@
   two exe's. Then no DLL plugin is needed for a plugin system, separate exe's
   can be used.
 
+  Todo: rename to dynsIpc.lpr
+
   Notes:
     -try also AdvancedIPC unit for more features not available in simpleipc
     -From fpc docs: "a SimpleIPC client in a desktop application cannot connect
@@ -23,7 +25,8 @@ library dynsimpleipc;
 {$mode objfpc} {$H+}
 
 uses
-  mainipc;
+  mainipc,   // todo: rename to sIpcServ
+  sIpcClient;
 
 begin
 // leave empty, this is a DLL

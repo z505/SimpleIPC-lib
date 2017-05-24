@@ -27,6 +27,12 @@ const
   mtXY = 3;       // x and y integer pair
   mtInts = 4;     // four integers
   mtIntStr = 5;   // integer and string combination
+{ Todo: ----------------------------------------------
+  mtXYStr        // 2 integers and a string
+  mtIntsStr      // four integers and a string
+  mtServCmd      // server command: i.e. stop server
+  ------------------------------------------------------- }
 
-
+const
+  TEST_SERVER_ID = '12345test';
 
