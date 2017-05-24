@@ -21,6 +21,7 @@ typedef void (__cdecl *TCallbackXY)(int, int);
 typedef void (__cdecl *TCallbackInts)(int, int, int, int);
 typedef void (__cdecl *TCallbackIntStr)(int, char*);
 
+/* server functions */
 extern int __cdecl
 sIpcCreateServer();
 
@@ -43,6 +44,33 @@ sIpcExecOnMsg(int peektime, int sleeptime,
   TCallbackXY cbXY,
   TCallbackInts cbInts,
   TCallbackIntStr cbIntStr);
+
+/* client functions */
+
+extern int __cdecl
+sIpcCreateClient();
+
+extern int __cdecl
+sIpcFreeClient();
+
+extern int __cdecl
+sIpcStartClient(char* servID);
+
+extern int __cdecl
+sIpcSendStringMsg(char* s);
+
+extern int __cdecl
+sIpcSendXYMsg(int x, int y);
+
+extern int __cdecl
+sIpcSendInt32Msg(int i);
+
+extern int __cdecl
+sIpcSendIntStrMsg(int i, char* s);
+
+extern int __cdecl
+sIpcSendIntsMsg(int x1, int x2, int x3, int x4);
+
 
 // optional todo:
 
