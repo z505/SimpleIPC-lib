@@ -48,11 +48,10 @@ end;
 { returns errors:
    0: success
    1: ipc client already created, can't create until freed first }
-function sIpcCreateClient(ServerID: pchar): int32; cdecl;
+function sIpcCreateClient(): int32; cdecl;
 begin
   if assigned(IpcCli) then exit(1);
-  IpcCli.Create(nil);
-  IpcCli.ServerID := ServerID;
+  IpcCli := TSimpleIPCClient.Create(nil);
   result := 0;
 end; exports sIpcCreateClient;
 

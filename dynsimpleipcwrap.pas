@@ -42,7 +42,7 @@ function sIpcExecOnIntStr(peektime: int32; sleeptime: int32; cb: TCallbackIntStr
 external dll;
 
 {  client functions }
-function sIpcCreateClient(ServerID: pchar): int32; cdecl;
+function sIpcCreateClient: int32; cdecl;
 external dll;
 function sIpcFreeClient: int32; cdecl;
 external dll;
