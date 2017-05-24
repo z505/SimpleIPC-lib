@@ -22,16 +22,16 @@ typedef void (__cdecl *TCallbackInts)(int, int, int, int);
 typedef void (__cdecl *TCallbackIntStr)(int, char*);
 
 extern int __cdecl
-sIpcCreateServer(char* ServerID, int threaded);
+sIpcCreateServer();
 
-extern void __cdecl
-sIpcCreateServerTest();
+extern int __cdecl
+sIpcStartServerTest();
 
 extern int __cdecl
 sIpcFreeServer();
 
 extern int __cdecl
-sIpcStartServer();
+sIpcStartServer(char* servID, int threaded);
 
 extern int __cdecl
 sIpcPeekMsg(int timeout, int readopt);
