@@ -23,15 +23,12 @@ uses
 
 {$I libdeclare.inc}
 
-const TEST_SERVER_ID = '12345test'; // server id for default testing
-
 type
   TIpc = Class(TObject)
     Srv : TSimpleIPCServer;
     Threaded: Boolean;
     DoStop: Boolean;
     procedure MessageQueued(Sender: TObject);
-    procedure Start;
     procedure PrintMessage;
   end;
 
@@ -75,11 +72,6 @@ procedure TIpc.MessageQueued(Sender: TObject);
 begin
   srv.ReadMessage;
   // PrintMessage;
-end;
-
-procedure TIpc.Start;
-begin
-  srv.StartServer(self.Threaded);
 end;
 
 { Parameters:
@@ -126,7 +118,6 @@ end; exports sIpcPeekMsg;
 }
 function sIpcReadMsgAsString(buf: pchar): int32; cdecl;
 begin
-  result := 0;
   if not assigned(ipc) then exit(3);
   if not assigned(ipc.srv) then exit(4);
   if not ipc.srv.active exit(5);
@@ -147,6 +138,7 @@ begin
   except
     exit(1);
   end;
+  result := 0;
 end; exports sIpcReadMsgAsString;
 *)
 
@@ -186,7 +178,6 @@ var
   tmpint: integer;
   tmpstr: string;
 begin
-  result := 0;
   if not assigned(ipc) then exit(6);
   if not assigned(ipc.srv) then exit(5);
   if ipc.Threaded then exit(4);
@@ -249,6 +240,7 @@ begin
   except
      exit(2);
   end;
+  result := 0;
 end; exports sIpcExecOnMsg;
 
 function sIpcExecOnString(peektime: int32; sleeptime: int32; cb: TCallbackString): int32; cdecl;
@@ -276,77 +268,31 @@ begin
   result:= sIpcExecOnMsg(peektime, sleeptime, nil, nil, nil, nil, cb);
 end; exports sIpcExecOnIntStr;
 
-
 { returns errors:
    0: no errors
-   1: server already created, can't create again until freed first
-   2: threaded IPC not available on this operating system or platform
-   3: other error
-}
-function sIpcCreateServer(ServerID: pchar; threaded: int32): int32; cdecl;
-  procedure cleanup;
-  begin
-    if assigned(ipc) then begin
-       if assigned(ipc.srv) then ipc.srv.free;
-       ipc.free; ipc := nil;
-    end;
-  end;
+   1: ipc variable already created, can't create again until freed first
+   2: ipc server already created, can't create again until freed first }
+function sIpcCreateServer: int32; cdecl;
 begin
-  result := 0;
-  if assigned(ipc) then begin
-    // StatusLn('IPC not created, because an existing server was already created');
-    exit(1);
-  end;
+  if assigned(ipc) then exit(1);
+  if assigned(ipc.srv) then exit(2);
   ipc := TIpc.Create;
-  try
-    ipc.srv := TSimpleIPCServer.Create(nil);
-    try
-      // StatusLn('IPC server created');
-      ipc.srv.ServerID := ServerID;
-      ipc.srv.global := true;
-      case threaded of
-        OPT_THREAD: ipc.Threaded := true;
-        OPT_NO_THREAD: ipc.Threaded := false;
-      else
-        ipc.Threaded := false;
-      end;
-
-      if ipc.Threaded then begin
-       {$IFDEF windows}
-        cleanup;
-        exit(2);
-       {$ELSE}
-        // StatusLn('using threaded ipc server');
-        ipc.srv.OnMessageQueued := @ipc.MessageQueued;
-       {$ENDIF}
-      end;
-    except
-      cleanup;
-      exit(3);
-    end;
-
-  except
-    cleanup;
-    exit(3);
-  end;
+  ipc.srv := TSimpleIPCServer.Create(nil);
+  result := 0;
 end; exports sIpcCreateServer;
 
-// simple test with default server ID of 12345test
-procedure sIpcCreateServerTest; cdecl;
-begin
-  sIpcCreateServer(TEST_SERVER_ID, OPT_NO_THREAD);
-end; exports sIpcCreateServerTest;
 
 { returns
+  0: success
   1: error stopping the server
-  2: ipc variable not assigned, trying to free variable that doesn't exist
-  3: ipc server variable not assigned, trying to free server that doesn't exist
-  4: error freeing ipc server
-}
+  2: ipc variable not assigned (is nil), can't free variable that doesn't exist
+  3: ipc server variable not assigned, trying to free server that doesn't exist }
 function sIpcFreeServer: int32; cdecl;
 
   procedure cleanup;
-  begin ipc.free; ipc := nil;
+  begin
+    ipc.srv.free; ipc.srv := nil;
+    ipc.free; ipc := nil;
   end;
 
 begin
@@ -359,33 +305,53 @@ begin
     cleanup;
     exit(1);
   end;
-
-  try
-    ipc.srv.free; ipc.srv := nil;
-  except
-    cleanup;
-    exit(4);
-  end;
   cleanup;
+  result := 0;
 end; exports sIpcFreeServer;
 
 { returns errors:
   0: success
-  1: general error
+  1: cannot create threaded server on this OS/platform
   2: error running server
-  3: IPC variable not created (it is nil)
-}
-function sIpcStartServer: int32; cdecl;
+  3: IPC variable not created (is nil)
+  4: ipc server variable not created (is nil) }
+function sIpcStartServer(servID: pchar; threaded: int32): int32; cdecl;
 begin
-  result := 1;
   if not assigned(ipc) then exit(3);
+  if not assigned(ipc.srv) then exit(4);
   try
-    ipc.Start;
+    ipc.srv.ServerID := servID;
+    // StatusLn('IPC server created');
+    ipc.srv.ServerID := servID;
+    ipc.srv.global := true;
+    case threaded of
+      OPT_THREAD: ipc.Threaded := true;
+      OPT_NO_THREAD: ipc.Threaded := false;
+    else
+      ipc.Threaded := false;
+    end;
+
+    if ipc.Threaded then begin
+     {$IFDEF windows}
+      // simpleipc threaded needs to fixed on windows, see fpc bug report
+      exit(1);
+     {$ELSE}
+      // StatusLn('using threaded ipc server');
+      ipc.srv.OnMessageQueued := @ipc.MessageQueued;
+     {$ENDIF}
+    end;
+    ipc.srv.StartServer(ipc.threaded);
   except
-    result := 2;
+    exit(2);
   end;
   result := 0;
 end; exports sIpcStartServer;
+
+{ simple test with default test server ID, returns error if any }
+function sIpcStartServerTest: int32; cdecl;
+begin
+  result := sIpcStartServer(TEST_SERVER_ID, OPT_NO_THREAD);
+end; exports sIpcStartServerTest;
 
 
 end.
