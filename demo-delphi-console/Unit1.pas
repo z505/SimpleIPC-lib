@@ -36,18 +36,6 @@ implementation
 uses
   dynsimpleipcwrap;
 
-{
-Available functions in DLL:
-function sIpcCreateClient: int32; cdecl;
-function sIpcFreeClient: int32; cdecl;
-function sIpcStartClient(servID: pchar): int32; cdecl;
-function sIpcSendStringMsg(s: pchar): int32; cdecl;
-function sIpcSendXYMsg(x: int32; y: int32): int32; cdecl;
-function sIpcSendInt32Msg(i: int32): int32; cdecl;
-function sIpcSendIntStrMsg(i: int32; s: pchar): int32; cdecl;
-function sIpcSendIntsMsg(x1: int32; x2: int32; x3: int32; x4: int32): int32; cdecl;
-}
-
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   sIpcCreateClient;
