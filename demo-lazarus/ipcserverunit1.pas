@@ -34,16 +34,6 @@ type
 
 var
   Form1: TForm1;
-(*
-const
-  DLLNAME = 'dynsimpleipc.dll';
-
-procedure CreateIpcServer(ServerID: pchar; threaded: int32); cdecl; external DLLNAME;
-procedure CreateIpcServerTest; cdecl; external DLLNAME;
-procedure FreeIpcServer; cdecl; external DLLNAME;
-procedure RunIpcServer; cdecl; external DLLNAME;
-procedure CheckMsg; cdecl; external DLLNAME;
-*)
 
 implementation
 
@@ -65,7 +55,7 @@ begin
 end;
 
 // callback dll uses when there is a string message
-procedure PrintMsg(p: pchar); cdecl;
+procedure PrintMsg(p: pansichar); cdecl;
 var s: string;
 begin
   s:= string(p);
