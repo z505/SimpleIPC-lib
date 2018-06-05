@@ -116,7 +116,7 @@ end; exports sIpcPeekMsg;
     4: ipc server does not exist (is nil), server probably not created
     5: ipc server not active
 }
-function sIpcReadMsgAsString(buf: pchar): int32; cdecl;
+function sIpcReadMsgAsString(buf: pansichar): int32; cdecl;
 begin
   if not assigned(ipc) then exit(3);
   if not assigned(ipc.srv) then exit(4);
@@ -124,7 +124,7 @@ begin
 
   try
     ipc.srv.ReadMessage;
-    // allocate memory for pchar by caller.. make sure length of buffer is correct
+    // allocate memory for pansichar by caller.. make sure length of buffer is correct
     if ipc.srv.MsgType = mtString then begin
       // TODO: copy into buffer here
       // is this function really needed? or is the callback mechanism good
@@ -188,7 +188,7 @@ begin
       case ipc.srv.MsgType of
         mtString: begin
                     if cbString <> nil then begin
-                      cbString(pchar(recvdstring));
+                      cbString(pansichar(recvdstring));
                     end else begin
                       exit(3);
                     end;
@@ -228,7 +228,7 @@ begin
                     success := ParseIntAndStr(recvdstring, tmpint, tmpstr);
                     if not success then exit(1);
                     if cbIntStr <> nil then begin
-                      cbIntStr(tmpint, pchar(tmpstr));
+                      cbIntStr(tmpint, pansichar(tmpstr));
                     end else begin
                       exit(3);
                     end;
@@ -318,7 +318,7 @@ end; exports sIpcFreeServer;
   2: error running server
   3: IPC variable not created (is nil)
   4: ipc server variable not created (is nil) }
-function sIpcStartServer(servID: pchar; threaded: int32): int32; cdecl;
+function sIpcStartServer(servID: pansichar; threaded: int32): int32; cdecl;
 begin
   if not assigned(ipc) then exit(3);
   if not assigned(ipc.srv) then exit(4);

@@ -1,6 +1,5 @@
 unit dynsimpleipcwrap;
-
-{$mode objfpc}{$H+}
+{$ifdef FPC}{$mode objfpc}{$H+}{$endif}
 
 interface
 
@@ -16,8 +15,10 @@ function sIpcCreateServer: int32; cdecl;
 external dll;
 function sIpcFreeServer: int32; cdecl;
 external dll;
-function sIpcStartServer(servID: pchar; threaded: int32): int32; cdecl;
+function sIpcStartServer(servID: pansichar; threaded: int32): int32; cdecl;
 external dll;
+// TODO
+// PWideChar
 function sIpcStartServerTest: int32; cdecl;
 external dll;
 function sIpcPeekMsg(timeout: int32; readopt: int32): int32; cdecl;
@@ -34,7 +35,7 @@ function sIpcExecOnString(peektime: int32; sleeptime: int32; cb: TCallbackString
 external dll;
 function sIpcExecOnInt32(peektime: int32; sleeptime: int32; cb: TCallbackInt32): int32; cdecl;
 external dll;
-function sIpcExecOnX4(peektime: int32; sleeptime: int32; cb: TCallbackX4): int32; cdecl;
+function sIpcExecOnInts(peektime: int32; sleeptime: int32; cb: TCallbackInts): int32; cdecl;
 external dll;
 function sIpcExecOnXY(peektime: int32; sleeptime: int32; cb: TCallbackXY): int32; cdecl;
 external dll;
@@ -46,16 +47,23 @@ function sIpcCreateClient: int32; cdecl;
 external dll;
 function sIpcFreeClient: int32; cdecl;
 external dll;
-function sIpcStartClient(servID: pchar): int32; cdecl;
+function sIpcStartClient(servID: pansichar): int32; cdecl;
 external dll;
-function sIpcSendStringMsg(s: pchar): int32; cdecl;
+// TODO
+// PWideChar
+function sIpcSendStringMsg(s: pansichar): int32; cdecl;
 external dll;
+// TODO
+// PWideChar
 function sIpcSendXYMsg(x: int32; y: int32): int32; cdecl;
 external dll;
 function sIpcSendInt32Msg(i: int32): int32; cdecl;
 external dll;
-function sIpcSendIntStrMsg(i: int32; s: pchar): int32; cdecl;
+function sIpcSendIntStrMsg(i: int32; s: pansichar): int32; cdecl;
 external dll;
+// TODO
+// PWideChar
+
 function sIpcSendIntsMsg(x1: int32; x2: int32; x3: int32; x4: int32): int32; cdecl;
 external dll;
 

@@ -5,12 +5,15 @@
   License: bsd/mit }
 
 type
-  TCallbackString = procedure(s: pchar); cdecl;
+  TCallbackString = procedure(s: pansichar); cdecl;
+  // TODO
+  // TCallbackStringW = procedure(s: pwidechar); cdecl;
   TCallbackInt32 = procedure(x: int32); cdecl;
   TCallbackXY = procedure(x,y: int32); cdecl;
   TCallbackInts = procedure(x1,x2,x3,x4: int32); cdecl;
-  TCallbackIntStr = procedure(i: int32; s: pchar); cdecl;
-
+  TCallbackIntStr = procedure(i: int32; s: pansichar); cdecl;
+  // TODO
+  // TCallbackIntStrW = procedure(i: int32; s: pwidechar); cdecl;
 const
   MSG_NO_READ = 0;
   MSG_READ = 1;
@@ -28,6 +31,8 @@ const
   mtInts = 4;     // four integers
   mtIntStr = 5;   // integer and string combination
 { Todo: ----------------------------------------------
+  mtStringW // widechar
+  mtIntStrW // ..
   mtXYStr        // 2 integers and a string
   mtIntsStr      // four integers and a string
   mtServCmd      // server command: i.e. stop server
