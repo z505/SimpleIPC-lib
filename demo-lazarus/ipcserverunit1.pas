@@ -15,13 +15,13 @@ type
 
   TForm1 = class(TForm)
     ApplicationProperties1: TApplicationProperties;
-    bCreateIpcServer: TButton;
+    bCreateTestIpcServer: TButton;
     bRunIpc: TButton;
     bFreeIpcServer: TButton;
     bRunNonThreaded: TButton;
     Memo1: TMemo;
     procedure ApplicationProperties1Idle(Sender: TObject; var Done: Boolean);
-    procedure bCreateIpcServerClick(Sender: TObject);
+    procedure bCreateTestIpcServerClick(Sender: TObject);
     procedure bFreeIpcServerClick(Sender: TObject);
     procedure bRunNonThreadedClick(Sender: TObject);
     procedure bRunIpcClick(Sender: TObject);
@@ -49,9 +49,9 @@ begin
   form1.memo1.Lines.add(s + inttostr(i));
 end;
 
-procedure TForm1.bCreateIpcServerClick(Sender: TObject);
+procedure TForm1.bCreateTestIpcServerClick(Sender: TObject);
 begin
-  sIpcCreateIpcServerTest;
+  //sIpcCreateServerTest;
 end;
 
 // callback dll uses when there is a string message
@@ -71,22 +71,23 @@ end;
 procedure TForm1.bFreeIpcServerClick(Sender: TObject);
 var err: integer;
 begin
-  err := sIpcFreeIpcServer;
+  err := sIpcFreeServer;
   if err > 0 then MemoStatusLn('An error occured when freeing IPC server: ', err)
 end;
 
 procedure TForm1.bRunNonThreadedClick(Sender: TObject);
 var err: integer;
 begin
-  err := sIpcCreateIpcServer('123', 0);
-  if err > 0 then MemoStatusLn('An error occured when creating IPC server: ', err)
+  // err := sIpcCreateServer('123', 0);
+  err := sIpcCreateServer;
+  if err > 0 then MemoStatusLn('An error occured when creating IPC server: ', err);
 end;
 
 procedure TForm1.bRunIpcClick(Sender: TObject);
 var err: integer;
 begin
-  err := sIpcStartIpcServer;
-  if err > 0 then MemoStatusLn('An error occured when starting IPC server: ', err)
+  err := sIpcStartServer(TEST_SERVER_ID, OPT_NO_THREAD);
+  if err > 0 then MemoStatusLn('An error occured when starting IPC server: ', err);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
