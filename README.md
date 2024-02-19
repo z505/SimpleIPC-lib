@@ -4,7 +4,7 @@ Simple IPC (interprocess communication) for any program shipped as a dll/so, or 
 Why is IPC so difficult and why do so many people end up reinventing their own IPC mechanisms?
 
 This is an attempt to make IPC simple.
-* Any language (C/C++/Delphi/Rust/Python/etc.) should be able to simply ship a DLL with the application that handles all the IPC mechanisms.
+* Any language (C/C++/Delphi/Python/etc.) should be able to simply ship a DLL with the application that handles all the IPC mechanisms.
 * Then you just send a string, integer, boolean with a simple function.
 * The receiving program also has the DLL loaded and can communicate with any program that has the SimpleIPC dll loaded into it.
 
@@ -29,6 +29,7 @@ Adcantages and great uses of IPC:
 * less need for threads and dangerous/risky programming tactics
 * allows exceptions to be caught in each executable instead of exceptions in a dll
 * allows multiple programming languages to be used for each executable if there is an existing codebase out there that you need to use for one executable, while you still want to program another executabe in another language.  This is complex and a disadvatage compared to writing in one language, but sometimes the problem in software development that is addressed by having the tool available for it since codebases out there exist in other languages that one wants to incorporate into your project.
+* platforms are missing postmessage and sendmessage functions and SimpleIPC solves that 
 
 Alternative to: zeromq, corba, windows SendMessage/PostMessage, DLL based plugin systems, remote procedure calls, and many other more complicated ipc mechanisms
 
