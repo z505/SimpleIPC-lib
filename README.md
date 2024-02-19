@@ -12,7 +12,7 @@ First goals of this project:
 * show a Golang exe communicating with a Lazarus/FPC exe
 * show a Golang exe communicating with a C++/C exe
 * show a Python program communicating with a Golang/FPC exe
-* show Rust... Nimrod.. and many more
+* show some more languages
 * show that it works on linux/bsd/macOS/windows (all the popular platforms)
 
 Analogy: any program that has a sqlite dll loaded, can communicate with an sqlite database..
@@ -20,14 +20,16 @@ Why not have something similar for IPC (inter process communication)?
 All the programmer needs to do is load the SimpleIPC DLL into his exe/elf, then he can communicate with any other exe/elf that also has the simpleipc dll loaded.
 Or, alternatively, one does not have to load a DLL, and can link the SimpleIPC code in statically with .a/.h files possibly in the future, once again similar to sqlite.
 
-More advanced IPC: google protocol buffers in combination with simpleipc means you can send standardized data using the well known google protocol buffer mechanism (GPB). The GPB does not handle IPC for you, so when you need IPC mechanism to actually send and receive the google protocol buffer, why not use SimpleIPC?
+More advanced IPC: string with records or structs and their types, or tuples. This is in addtion to the simple ones like OnInteger OnString ipc messages.
 
-Cool things about IPC:
-* could make a plugin system that allows you to compile separate exe's as your plugins (really modular) instead of using DLL's as your plugins.
-* reduces the chance of the main program crashing if you have multiple exe's. Each exe is it's own process, so if one fails, the main exe does not fail
+Adcantages and great uses of IPC:
+* programmer can make a plugin system that allows you to compile separate exe's as your plugins (really modular) instead of using DLL's.
+* reduces the chance of the main program crashing. Each exe is it's own process, so if one fails, the main exe does not fail and just the IPC exe fails
 * multiple processes could theoretically be used across multiple CPU's if this is of any performance benefit to you
 * less need for threads and dangerous/risky programming tactics
+* allows exceptions to be caught in each executable instead of exceptions in a dll
+* allows multiple programming languages to be used for each executable if there is an existing codebase out there that you need to use for one executable, while you still want to program another executabe in another language.  This is complex and a disadvatage compared to writing in one language, but sometimes the problem in software development that is addressed by having the tool available for it since codebases out there exist in other languages that one wants to incorporate into your project.
 
-Alternative to: zeromq, corba, windows SendMessage/PostMessage, DLL based plugin systems, and a million other ipc mechanisms
+Alternative to: zeromq, corba, windows SendMessage/PostMessage, DLL based plugin systems, remote procedure calls, and many other more complicated ipc mechanisms
 
-Thanks to: SimpleIpc FPC unit authors (Michael Van Canneyt and others)
+Thanks to: SimpleIpc FPC unit authors (Michael Van Canneyt and others) since this code  wraps that code they wrote for one compiler purpose
